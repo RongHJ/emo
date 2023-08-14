@@ -9,4 +9,10 @@ public interface UserService extends IService<User> {
     //获取所有用户
     List<User> getAllUser();
 
+    boolean isExistUser(String userid);
+
+    User getUserById(String userid);
+
+
+
 }
