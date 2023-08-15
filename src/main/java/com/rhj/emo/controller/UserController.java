@@ -1,6 +1,6 @@
 package com.rhj.emo.controller;
 
-import cn.dev33.satoken.annotation.SaIgnore;
+
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaResult;
 import cn.hutool.captcha.CaptchaUtil;
@@ -15,7 +15,7 @@ import com.rhj.emo.util.NetworkUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
+
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -45,10 +45,10 @@ public class UserController {
         String userid = user.getStr("username", "");
         String password = user.getStr("password", "");
         String code = user.getStr("code","");
-        System.out.println("validateCode"+NetworkUtil.getRequestIp(request)+session.getAttribute("validateCode"+NetworkUtil.getRequestIp(request)));
-//        if (!code.equals(session.getAttribute("validateCode"+NetworkUtil.getRequestIp(request)))){
-//            return SaResult.error("验证码错误");
-//        }
+
+        if (!code.equals(session.getAttribute("validateCode"+NetworkUtil.getRequestIp(request)))){
+            return SaResult.error("验证码错误");
+        }
 
 
         if (userid.length()==0||password.length()==0){
@@ -85,21 +85,20 @@ public class UserController {
         String requestIp = NetworkUtil.getRequestIp(request);
         //定义图形验证码的长和宽  码值个数  干扰圈数
         CircleCaptcha circleCaptcha = CaptchaUtil.createCircleCaptcha(90, 40, 4, 10);
-        BufferedImage codeImg = circleCaptcha.getImage();
 
         if (null != count && count > 0) {
             //重新生成验证码
             circleCaptcha.createCode();
         }
+        BufferedImage codeImg = circleCaptcha.getImage();
         //String codeImg = lineCaptcha.getImageBase64();
         String authCode = circleCaptcha.getCode();
+
         if (session.getAttribute("validateCode"+requestIp) != null) {
             session.removeAttribute("validateCode"+requestIp);
-            session.setAttribute("validateCode"+requestIp, authCode);
-        } else {
-            session.setAttribute("validateCode"+requestIp, "请输入验证码");
         }
-        System.out.println("validateCode"+requestIp+"验证码："+authCode);
+        session.setAttribute("validateCode"+requestIp, authCode);
+        System.out.println("validateCode"+requestIp+",验证码："+ authCode);
         ServletOutputStream sos;
         try {
             sos = response.getOutputStream();
