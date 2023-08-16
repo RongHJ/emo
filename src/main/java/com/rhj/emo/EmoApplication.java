@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-//@MapperScan(value = "com.rhj.emo.mapper.*")
+@MapperScan(value = "com.rhj.emo.mapper")
 @ComponentScan(basePackages = {"com.rhj"})
 public class EmoApplication {
 
